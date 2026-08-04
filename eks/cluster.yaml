@@ -1,0 +1,9 @@
+# auto-mode-cluster.yaml
+apiVersion: eksctl.io/v1alpha5
+kind: ClusterConfig
+metadata:
+  name: pacman-cluster
+  region: eu-central-1
+
+autoModeConfig:
+  enabled: true
