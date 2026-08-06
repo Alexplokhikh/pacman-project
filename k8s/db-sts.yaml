@@ -1,0 +1,68 @@
+# This is a Kubernetes manifest file for deploying a MongoDB StatefulSet and Service.
+# deployment of MongoDB using a StatefulSet, which provides stable network identities and persistent storage for each replica.
+apiVersion: v1
+kind: Service
+metadata:
+  name: mongo
+  labels:
+    app: mongo
+# spec = specification of the desired behavior of the service
+spec:
+  clusterIP: None
+  ports:
+    - port: 27017
+      name: mongodb
+  selector:
+    app: mongo
+---
+# statefulset configuration
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: mongo
+  labels:
+    app: mongo
+# spec = specification of the desired behavior of the statefulset
+spec:
+  serviceName: mongo
+  replicas: 2
+  selector:
+    matchLabels:
+      app: mongo
+  # template = pod template, which describes the pods that will be created by this statefulset
+  template:
+    metadata:
+      labels:
+        app: mongo
+    # spec = specification of the desired behavior of the pod
+    spec:
+      containers:
+        - name: mongo
+          image: mongo:3.4.24
+          # ports = list of ports to expose from the container
+          ports:
+            - containerPort: 27017
+              # name of the port, which can be used to reference the port in other parts of the configuration
+              name: mongodb
+          # volumeMounts = list of volumes to mount into the container's filesystem
+          volumeMounts:
+            # name of the volume to mount, which must match the name of a volume defined in the pod's spec
+            - name: mongo-data
+              mountPath: /data/db
+  # volumeClaimTemplates = list of PersistentVolumeClaims to create for each replica of the StatefulSet
+  volumeClaimTemplates:
+    - metadata:
+        # name of the PersistentVolumeClaim, which must be unique within the StatefulSet
+        name: mongo-data
+      spec:
+        # storageClassName = name of the StorageClass to use for the PersistentVolumeClaim, a StorageClass defines the type of storage to use for the volume
+        # auto-ebs-sc is a custom StorageClass that uses Amazon EBS (Elastic Block Store) to provide persistent storage for the MongoDB StatefulSet
+        storageClassName: auto-ebs-sc
+        # accessModes = list of access modes for the PersistentVolumeClaim, access modes determine how the volume can be mounted by pods
+        accessModes:
+          #readWriteOnce = the volume can be mounted as read-write by a single node
+          - ReadWriteOnce
+        # resources = resource requirements for the PersistentVolumeClaim, as defined in the Kubernetes API
+        resources:
+          requests:
+            storage: 10Gi

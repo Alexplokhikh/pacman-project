@@ -1,0 +1,65 @@
+﻿# This is a Kubernetes deployment configuration file for the Pacman application.
+# deployment configuration
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: pacman-app
+  labels:
+    app: pacman
+# spec = specification of the desired behavior of the deployment
+spec:
+  # This deployment will create 3 replicas of the Pacman application
+  replicas: 3
+  selector:
+    matchLabels:
+      app: pacman
+  # template = pod template, which describes the pods that will be created by this deployment
+  template:
+    metadata:
+      labels:
+        app: pacman
+    # spec = specification of the desired behavior of the pod
+    spec:
+      containers:
+        - name: pacman
+          image: <My Image URL> # This should be replaced with the actual image URL from the ECR repository
+          imagePullPolicy: IfNotPresent
+          ports:
+            # This container will listen on port 8080 for incoming traffic - retrieved from the Dockerfile
+            - containerPort: 8080
+          env:
+            - name: MONGO_SERVICE_HOST
+              value: mongo
+            - name: MONGO_DATABASE
+              value: pacman
+            - name: MY_MONGO_PORT
+              value: "27017"
+            - name: MONGO_USE_SSL
+              value: "false"
+            - name: MONGO_VALIDATE_SSL
+              value: "false"
+            - name: MONGO_URL
+              value: mongodb://mongo:27017/pacman
+
+---
+# service configuration
+apiVersion: v1
+kind: Service
+metadata:
+  name: pacman-service
+  annotations:
+    # This annotation specifies that the service should be exposed to the internet
+    service.beta.kubernetes.io/aws-load-balancer-scheme: internet-facing
+    # The "internet-facing" value indicates that the service should be accessible from outside the cluster.
+    # This annotation specifies that the service should use an NLB (Network Load Balancer) instead of a classic ELB (Elastic Load Balancer).
+    service.beta.kubernetes.io/aws-load-balancer-nlb-target-type: "ip"
+# The "ip" value indicates that the NLB should route traffic directly to the IP addresses of the pods, rather than to the nodes in the cluster.
+spec:
+  type: LoadBalancer
+  selector:
+    app: pacman
+  ports:
+    # This service will listen on port 80 and forward traffic to the Pacman application on port 8080
+    - port: 80
+      targetPort: 8080
+      protocol: TCP

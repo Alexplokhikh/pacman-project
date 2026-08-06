@@ -1,0 +1,26 @@
+# This is a Kubernetes StorageClass configuration file for Amazon EBS (Elastic Block Store) using the EBS CSI driver.
+# It defines a storage class named "auto-ebs-sc" that allows dynamic provisioning of EBS volumes with specific parameters.
+apiVersion: storage.k8s.io/v1
+kind: StorageClass
+metadata:
+  name: auto-ebs-sc
+  # This annotation marks this storage class as the default storage class for the cluster.
+  annotations:
+    # This annotation indicates that this storage class should be used as the default for dynamic volume provisioning.
+    storageclass.kubernetes.io/is-default-class: "true"
+# allowedTopologies = list of topologies that are allowed for this storage class, -
+# which can be used to restrict the placement of volumes to specific nodes or zones
+allowedTopologies:
+  - matchLabelExpressions:
+      - key: eks.amazonaws.com/compute-type
+        values:
+          - auto
+# provisioner = name of the volume plugin that will be used to provision volumes for this storage class
+provisioner: ebs.csi.eks.amazonaws.com
+# volumeBindingMode = indicates when volume binding and dynamic provisioning should occur
+volumeBindingMode: WaitForFirstConsumer
+# parameters = key-value pairs that define the parameters for the provisioner
+parameters:
+  # type = type of EBS volume to create (gp3 is a general-purpose SSD volume type)
+  type: gp3
+  encrypted: "true"
