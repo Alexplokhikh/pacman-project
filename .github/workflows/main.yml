@@ -57,8 +57,6 @@ jobs:
         run: |
           kubectl apply -f k8s/storage-class.yaml
           kubectl apply -f k8s/db-sts.yaml
-#         did'nt work as expected:
-#         sed -i "s|image: <My Image URL>|image: $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG|g" k8s/app-deployment.yaml
           kubectl apply -f k8s/app-deployment.yaml
           kubectl set image deployment/pacman-app pacman=$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
           kubectl rollout status deployment pacman-app
