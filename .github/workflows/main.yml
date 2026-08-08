@@ -32,6 +32,9 @@ jobs:
           docker build -f docker/Dockerfile -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .
           echo "Docker image built successfully."
           docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
+      - name: configure eks access
+        run: |
+          aws eks update-kubeconfig --region eu-central-1 --name pacman-cluster
       - name: Create AWS EKS Cluster Access Entry
         run: |
           aws eks create-access-entry \
@@ -46,9 +49,6 @@ jobs:
               --policy-arn arn:aws:eks::aws:cluster-access-policy/AmazonEKSClusterAdminPolicy \
               --access-scope '{"type": "cluster"}'
 
-      - name: configure eks access
-        run: |
-          aws eks update-kubeconfig --region eu-central-1 --name pacman-cluster
       - name: Update Kubernetes Deployment
         env:
           ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
