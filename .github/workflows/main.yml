@@ -39,13 +39,13 @@ jobs:
         run: |
           aws eks create-access-entry \
               --cluster-name pacman-cluster \
-              --principal-arn arn:aws:iam::${{ secrets.AWS_ACCOUNT_ID }}:role/github-actions \
+              --principal-arn arn:aws:iam::${{ secrets.AWS_ACCOUNT_ID }}:user/github-actions \
               --type STANDARD
       - name: Grant Cluster Permission
         run: |
           aws eks associate-access-policy \
               --cluster-name pacman-cluster \
-              --principal-arn arn:aws:iam::${{ secrets.AWS_ACCOUNT_ID }}:role/github-actions \
+              --principal-arn arn:aws:iam::${{ secrets.AWS_ACCOUNT_ID }}:user/github-actions \
               --policy-arn arn:aws:eks::aws:cluster-access-policy/AmazonEKSClusterAdminPolicy \
               --access-scope '{"type": "cluster"}'
 
