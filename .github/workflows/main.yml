@@ -32,6 +32,20 @@ jobs:
           docker build -f docker/Dockerfile -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .
           echo "Docker image built successfully."
           docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
+      - name: Create AWS EKS Cluster Access Entry
+        run: |
+          aws eks create-access-entry \
+              --cluster-name pacman-cluster \
+              --principal-arn arn:aws:iam::${{ secrets.AWS_ACCOUNT_ID }}:role/github-actions \
+              --type STANDARD
+      - name: Grant Cluster Permission
+        run: |
+          aws eks associate-access-policy \
+              --cluster-name pacman-cluster \
+              --principal-arn arn:aws:iam::${{ secrets.AWS_ACCOUNT_ID }}:role/github-actions \
+              --policy-arn arn:aws:eks::aws:cluster-access-policy/AmazonEKSClusterAdminPolicy \
+              --access-scope '{"type": "cluster"}'
+
       - name: configure eks access
         run: |
           aws eks update-kubeconfig --region eu-central-1 --name pacman-cluster
@@ -43,5 +57,10 @@ jobs:
         run: |
           kubectl apply -f k8s/storage-class.yaml
           kubectl apply -f k8s/db-sts.yaml
-          sed -i "s|image: <My Image URL>|image: $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG|g" k8s/app-deployment.yaml
+#         did'nt work as expected:
+#         sed -i "s|image: <My Image URL>|image: $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG|g" k8s/app-deployment.yaml
           kubectl apply -f k8s/app-deployment.yaml
+          kubectl set image deployment/pacman-app pacman=$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
+          kubectl rollout status deployment pacman-app
+          kubectl rollout status statefulset mongo
+          kubectl get services pacman-service
