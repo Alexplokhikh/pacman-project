@@ -22,7 +22,7 @@ spec:
     spec:
       containers:
         - name: pacman
-          image: 044014415398.dkr.ecr.eu-central-1.amazonaws.com/myapps/pacman:9cfcd071f317ea31deaad2e07ccc43ed4c7806f6 # This should be replaced with the actual image URL from the ECR repository
+          image: 044014415398.dkr.ecr.eu-central-1.amazonaws.com/myapps/pacman:87bcd613f7915bbc91433b30def0a7440466723a # This should be replaced with the actual image URL from the ECR repository
           imagePullPolicy: IfNotPresent
           ports:
             # This container will listen on port 8080 for incoming traffic - retrieved from the Dockerfile
@@ -54,8 +54,6 @@ metadata:
     # This annotation specifies that the service should use an NLB (Network Load Balancer) instead of a classic ELB (Elastic Load Balancer).
     service.beta.kubernetes.io/aws-load-balancer-nlb-target-type: "ip"
     # The "ip" value indicates that the NLB should route traffic directly to the IP addresses of the pods, rather than to the nodes in the cluster.
-    # 👇 ADD THIS LINE TO ENFORCE SECURITY GROUP TRACKING FOR POD IPs
-    service.beta.kubernetes.io/aws-load-balancer-manage-backend-security-group-rules: "true"
 spec:
   type: LoadBalancer
   selector:
