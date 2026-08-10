@@ -40,8 +40,6 @@ spec:
         - name: mongo
           image: mongo:3.4.24
           # ports = list of ports to expose from the container
-          command: ["mongod"]
-          args: ["--replSet", "rs0", "--bind_ip", "0.0.0.0"]
           ports:
             - containerPort: 27017
               # name of the port, which can be used to reference the port in other parts of the configuration
