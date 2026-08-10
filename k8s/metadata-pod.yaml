@@ -1,0 +1,21 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: cloud-metadata-pod
+spec:
+  containers:
+    - name: app-container
+      image: your-app-image
+      volumeMounts:
+        - name: node-info
+          mountPath: /etc/node-info
+  volumes:
+    - name: node-info
+      downwardAPI:
+        items:
+          - path: "zone"
+            fieldRef:
+              fieldPath: metadata.labels['topology.kubernetes.io/zone']
+          - path: "provider"
+            fieldRef:
+              fieldPath: metadata.labels['kubernetes.io/provider-id']
