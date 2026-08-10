@@ -46,7 +46,6 @@ jobs:
         run: |
           kubectl apply -f k8s/storage-class.yaml
           kubectl apply -f k8s/db-sts.yaml
-          kubectl get nodes -o custom-columns=NAME:.metadata.name,ZONE:.metadata.labels."topology\.kubernetes\.io\/zone",PROVIDER:.spec.providerID
           kubectl apply -f k8s/app-deployment.yaml
           echo "Docker image used: $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG"
           kubectl set image deployment/pacman-app pacman=$ACCOUNT_ID.dkr.ecr.eu-central-1.amazonaws.com/$ECR_REPOSITORY:$IMAGE_TAG

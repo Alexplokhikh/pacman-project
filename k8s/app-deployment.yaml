@@ -26,14 +26,13 @@ spec:
           imagePullPolicy: IfNotPresent
           ports:
             # This container will listen on port 8080 for incoming traffic - retrieved from the Dockerfile
-            - containerPort:
-                8080
-                # 👇 STEP 1A: Mount the volume inside the app container
+            - containerPort: 8080
+          # 👇 ДОБАВИТЬ ЭТОТ БЛОК ВНУТРЬ КОНТЕЙНЕРА
           volumeMounts:
             - name: node-info
               mountPath: /etc/node-info
               readOnly: true
-      # 👇 STEP 1B: Define the Downward API Volume at the Pod level
+      # 👇 ДОБАВИТЬ ЭТОТ БЛОК НА УРОВЕНЬ ПОДА (на одном уровне с containers)
       volumes:
         - name: node-info
           downwardAPI:
@@ -57,10 +56,6 @@ spec:
               value: "false"
             - name: MONGO_URL
               value: mongodb://mongo:27017/pacman
-            - name: MY_NODE_NAME
-              valueFrom:
-                fieldRef:
-                  fieldPath: spec.nodeName
 
 ---
 # service configuration
