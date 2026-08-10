@@ -29,6 +29,14 @@ spec:
             - containerPort: 8080
           # environment variables for the Pacman application
           env:
+            # Environment variable to specify the cloud provider (AWS in this case)
+            - name: CLOUD_PROVIDER
+              value: "AWS"
+            - name: AWS_ZONE
+              valueFrom:
+                fieldRef:
+                  fieldPath: spec.nodeName # Automatically substitute EC2 instance ID
+            # Environment variables for MongoDB connection
             - name: MONGO_SERVICE_HOST
               value: mongo
             - name: MONGO_DATABASE
@@ -41,22 +49,6 @@ spec:
               value: "false"
             - name: MONGO_URL
               value: mongodb://mongo:27017/pacman
-          # volumeMounts = mounts a volume to the container's filesystem
-          volumeMounts:
-            - name: node-info
-              mountPath: /etc/node-info
-              readOnly: true
-      # volumes = defines the volumes that can be mounted by containers in the pod
-      volumes:
-        - name: node-info
-          downwardAPI:
-            items:
-              - path: "zone"
-                fieldRef:
-                  fieldPath: metadata.labels['topology.kubernetes.io/zone']
-              - path: "provider"
-                fieldRef:
-                  fieldPath: metadata.labels['kubernetes.io/provider-id']
 
 ---
 # service configuration
