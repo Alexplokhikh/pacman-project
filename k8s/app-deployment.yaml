@@ -22,7 +22,7 @@ spec:
     spec:
       containers:
         - name: pacman
-          image: 044014415398.dkr.ecr.eu-central-1.amazonaws.com/myapps/pacman:87bcd613f7915bbc91433b30def0a7440466723a # This should be replaced with the actual image URL from the ECR repository
+          image: <IMAGE_URL> # This should be replaced with the actual image URL from the ECR repository
           imagePullPolicy: IfNotPresent
           ports:
             # This container will listen on port 8080 for incoming traffic - retrieved from the Dockerfile
