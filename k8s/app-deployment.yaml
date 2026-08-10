@@ -53,7 +53,9 @@ metadata:
     # The "internet-facing" value indicates that the service should be accessible from outside the cluster.
     # This annotation specifies that the service should use an NLB (Network Load Balancer) instead of a classic ELB (Elastic Load Balancer).
     service.beta.kubernetes.io/aws-load-balancer-nlb-target-type: "ip"
-# The "ip" value indicates that the NLB should route traffic directly to the IP addresses of the pods, rather than to the nodes in the cluster.
+    # The "ip" value indicates that the NLB should route traffic directly to the IP addresses of the pods, rather than to the nodes in the cluster.
+    # 👇 ADD THIS LINE TO ENFORCE SECURITY GROUP TRACKING FOR POD IPs
+    service.beta.kubernetes.io/aws-load-balancer-manage-backend-security-group-rules: "true"
 spec:
   type: LoadBalancer
   selector:
