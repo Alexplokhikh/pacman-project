@@ -5,6 +5,12 @@ on:
       - main
   workflow_dispatch:
 
+env:
+  ECR_REPOSITORY: myapps/pacman
+  IMAGE_TAG: ${{ github.sha }}
+  ACCOUNT_ID: ${{ secrets.AWS_ACCOUNT_ID }}
+  AWS_REGION: eu-central-1
+
 permissions:
   contents: read
   id-token: write
@@ -20,9 +26,9 @@ jobs:
       - name: Configure temporary AWS credentials
         uses: aws-actions/configure-aws-credentials@v4
         with:
-          role-to-assume: arn:aws:iam::${{ secrets.AWS_ACCOUNT_ID }}:role/github-actions-role
+          role-to-assume: arn:aws:iam::${{ env.ACCOUNT_ID }}:role/github-actions-role
           role-session-name: github-actions-${{ github.run_id }}
-          aws-region: eu-central-1
+          aws-region: ${{env.AWS_REGION}}
 
       - name: Confirm aws credentials
         run: |
@@ -35,13 +41,11 @@ jobs:
       - name: Build, Tag & Push a Docker image
         env:
           ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
-          ECR_REPOSITORY: myapps/pacman
-          IMAGE_TAG: ${{ github.sha }}
         run: |
-          docker build --no-cache -f docker/Dockerfile -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .
-          echo "Docker image built successfully: $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG"
-          docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
-          echo "Docker image pushed successfully: $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG"
+          docker build --no-cache -f docker/Dockerfile -t $ECR_REGISTRY/${{env.ECR_REPOSITORY}}:${{env.IMAGE_TAG}} .
+          echo "Docker image built successfully: $ECR_REGISTRY/${{env.ECR_REPOSITORY}}:${{env.IMAGE_TAG}}"
+          docker push $ECR_REGISTRY/${{env.ECR_REPOSITORY}}:${{env.IMAGE_TAG}}
+          echo "Docker image pushed successfully: $ECR_REGISTRY/${{env.ECR_REPOSITORY}}:${{env.IMAGE_TAG}}"
 
       - name: configure eks access
         run: |
@@ -50,15 +54,12 @@ jobs:
       - name: Update Kubernetes Deployment
         env:
           ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
-          ECR_REPOSITORY: myapps/pacman
-          IMAGE_TAG: ${{ github.sha }}
-          ACCOUNT_ID: ${{ secrets.AWS_ACCOUNT_ID }}
         run: |
           kubectl apply -f k8s/storage-class.yaml
           kubectl apply -f k8s/db-sts.yaml
           kubectl apply -f k8s/app-deployment.yaml
-          echo "Docker image used: $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG"
-          kubectl set image deployment/pacman-app pacman=$ACCOUNT_ID.dkr.ecr.eu-central-1.amazonaws.com/$ECR_REPOSITORY:$IMAGE_TAG
+          echo "Docker image used: $ECR_REGISTRY/${{env.ECR_REPOSITORY}}:${{env.IMAGE_TAG}}"
+          kubectl set image deployment/pacman-app pacman=${{env.ACCOUNT_ID}}.dkr.ecr.${{env.AWS_REGION}}.amazonaws.com/${{env.ECR_REPOSITORY}}:${{env.IMAGE_TAG}}
           kubectl rollout status deployment pacman-app
           kubectl rollout status statefulset mongo
           kubectl get services pacman-service
