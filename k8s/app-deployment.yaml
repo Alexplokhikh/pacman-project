@@ -38,9 +38,9 @@ spec:
                   fieldPath: spec.nodeName # Automatically substitute EC2 instance ID
             # Environment variables for MongoDB connection
             - name: MONGO_SERVICE_HOST
-              value: "mongo"
+              value: mongo
             - name: MONGO_DATABASE
-              value: "pacman"
+              value: pacman
             - name: MY_MONGO_PORT
               value: "27017"
             - name: MONGO_USE_SSL
@@ -48,7 +48,7 @@ spec:
             - name: MONGO_VALIDATE_SSL
               value: "false"
             - name: MONGO_URL
-              value: "mongodb://mongo-0.mongo:27017,mongo-1.mongo:27017/pacman?replicaSet=rs0"
+              value: "mongodb://mongo:27017/pacman"
 
 ---
 # service configuration
