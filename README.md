@@ -10,18 +10,14 @@ The application features a retro-styled retro dashboard that bridges the classic
 
 When the client initializes the game, the frontend triggers an immediate asynchronous AJAX synchronization handshake against the custom dynamic cloud geolocation route (`/location/metadata`).
 
-<p align="center">
-  ![Pacman Main Menu with Cloud Discovery](/images/menu.png)
-</p>
+![Pacman Main Menu with Cloud Discovery](/images/menu.png)
 
 - **Cloud Layer Decoupling:** Dynamically identifies the hosting infrastructure vendor (**AWS**) without hardcoded environment profiles.
 - **Instance Telemetry Map:** Surfaces the active, ephemeral worker host compute identity context directly to the gaming engine interface layer.
 
 ### 2. Active Gameplay & Interactive Control States
 
-<p align="center">
-  ![acman Active Gameplay and Controls](/images/gameplay.png) 
-</p>
+![Pacman Active Gameplay and Controls](/images/gameplay.png)
 
 Once the session begins, responsive touch-control overlays adjust dynamically based on the client device screen state, enabling cross-platform desktop and mobile accessibility.
 
@@ -30,15 +26,11 @@ Once the session begins, responsive touch-control overlays adjust dynamically ba
 
 ### 3. Highscore Storage & Persistent Data Display
 
-<p align="center">
-  ![Game-Over](/images/gameover.png)
-</p>
+![Game-Over](/images/gameover.png)
 
 Once the player loses the game (gets eaten), 'game over' overlays the client device screen state, enabling save record of its highscore.
 
-<p align="center">
-  [Highscores](/images/highscores.png)
-</p>
+![Highscores](/images/highscores.png)
 
 - **Persistent Volume Storage:** Highscores are saved on and fetched from a mongoDB service.
 
