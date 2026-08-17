@@ -2,6 +2,30 @@
 
 A production-grade, highly available deployment of a classic web-based Pacman application hosted on a managed **Amazon Elastic Kubernetes Service (EKS)** cluster. This project demonstrates modern cloud-native engineering, secure CI/CD orchestration using IAM OIDC, modular backend design, and dynamic environment metadata discovery.
 
+## 📺 Application Interface & Live Metadata
+
+The application features a retro-styled retro dashboard that bridges the classic arcade frontend with a cloud-native backend telemetry engine. 
+
+### 1. Main Menu & Cluster Discovery
+When the client initializes the game, the frontend triggers an immediate asynchronous AJAX synchronization handshake against the custom dynamic cloud geolocation route (`/location/metadata`).
+
+<p align="center">
+  <img src="images/menu.png" alt="Pacman Main Menu with Cloud Discovery" width="400"/>
+</p>
+
+* **Cloud Layer Decoupling:** Dynamically identifies the hosting infrastructure vendor (**AWS**) without hardcoded environment profiles.
+* **Instance Telemetry Map:** Surfaces the active, ephemeral worker host compute identity context directly to the gaming engine interface layer.
+
+### 2. Active Gameplay & Interactive Control States
+Once the session begins, responsive touch-control overlays adjust dynamically based on the client device screen state, enabling cross-platform desktop and mobile accessibility.
+
+<p align="center">
+  <img src="images/gameplay.png" alt="Pacman Active Gameplay and Controls" width="400"/>
+</p>
+
+* **Dynamic Ingress Performance:** High-speed Web Canvas pathfinding algorithms fetch map layouts and render real-time entity indexing under low-latency network constraints.
+* **Integrated Controls Refactoring:** The user interface features custom, fully refactored container stylesheets optimizing interactive touch control button fields.
+
 ---
 
 ## 🏗️ Architectural Overview
@@ -9,16 +33,27 @@ A production-grade, highly available deployment of a classic web-based Pacman ap
 The application follows a resilient, decoupled multi-tier architecture designed for scalable cloud operations:
 
 [ Internet ] ──► [ AWS Network Load Balancer (NLB) ]
+
 │
+
 (Port 80 to 8080)
+
 ▼
+
 [ Pacman App Pods (ReplicaSet x3) ]
+
 (Node.js / Express Backend)
+
 (HTML5 Canvas / HTML Frontend)
+
 │
+
 (Internal Cluster IP: 27017)
+
 ▼
+
 [ MongoDB StatefulSet ]
+
 (Persistent Storage Tier gp3)
 
 
