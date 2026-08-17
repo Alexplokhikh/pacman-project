@@ -11,7 +11,7 @@ The application features a retro-styled retro dashboard that bridges the classic
 When the client initializes the game, the frontend triggers an immediate asynchronous AJAX synchronization handshake against the custom dynamic cloud geolocation route (`/location/metadata`).
 
 <p align="center">
-  <img src="images/menu.png" alt="Pacman Main Menu with Cloud Discovery" width="400"/>
+  <img src="/images/menu.png.png" alt="Pacman Main Menu with Cloud Discovery" width="400"/>
 </p>
 
 - **Cloud Layer Decoupling:** Dynamically identifies the hosting infrastructure vendor (**AWS**) without hardcoded environment profiles.
@@ -22,11 +22,11 @@ When the client initializes the game, the frontend triggers an immediate asynchr
 Once the session begins, responsive touch-control overlays adjust dynamically based on the client device screen state, enabling cross-platform desktop and mobile accessibility.
 
 <p align="center">
-  <img src="images/gameplay.png" alt="Pacman Active Gameplay and Controls" width="400"/>
+  <img src="/images/gameplay.png.png" alt="Pacman Active Gameplay and Controls" width="400"/>
 </p>
 
 - **Dynamic Ingress Performance:** High-speed Web Canvas pathfinding algorithms fetch map layouts and render real-time entity indexing under low-latency network constraints.
-- **Integrated Controls Refactoring:** The user interface features custom, fully refactored container stylesheets optimizing interactive touch control button fields.
+- **Integrated Controls:** The user interface features container stylesheets optimizing interactive touch control button fields.
 
 ---
 
